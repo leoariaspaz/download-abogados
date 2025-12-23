@@ -1,20 +1,13 @@
-using System;
 using Dapper;
 
 namespace DownloadAbogados.Data;
 
-public class MatriculadosRepository : IMatriculadosRepository
+public class MatriculadosRepository(MySqlConnectionFactory connectionFactory) : IMatriculadosRepository
 {
-	private readonly Dictionary<string, Matriculado> _matriculados;
-	private readonly MySqlConnectionFactory _connectionFactory;
+	private readonly Dictionary<string, Matriculado> _matriculados = [];
+	private readonly MySqlConnectionFactory _connectionFactory = connectionFactory;
 
-	public MatriculadosRepository(MySqlConnectionFactory connectionFactory)
-	{
-		_connectionFactory = connectionFactory;
-		_matriculados = new Dictionary<string, Matriculado>();
-	}
-
-	public async Task PushAsync(Matriculado matriculado)
+	public void PushAsync(Matriculado matriculado)
 	{
 		if (matriculado.Matricula != null && !_matriculados.ContainsKey(matriculado.Matricula))
 		{
@@ -22,7 +15,7 @@ public class MatriculadosRepository : IMatriculadosRepository
 		}
 	}
 
-	public async Task ClearCacheAsync()
+	public void ClearCacheAsync()
 	{
 		_matriculados.Clear();
 	}
@@ -39,8 +32,10 @@ public class MatriculadosRepository : IMatriculadosRepository
 				await connection.ExecuteAsync(query, matriculado);
 			}
 			return true;
-		}catch (Exception)
+		}
+		catch (Exception ex)
 		{
+			Console.WriteLine("Error al guardar los datos en la base de datos.", ex);
 			return false;
 		}
 	}

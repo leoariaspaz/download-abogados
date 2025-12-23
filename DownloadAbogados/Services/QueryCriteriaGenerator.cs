@@ -1,9 +1,6 @@
-using System;
-using DownloadAbogados.Data;
-
 namespace DownloadAbogados.Services;
 
-public class QueryCriteriaGenerator
+public class QueryCriteriaGenerator : IQueryCriteriaGenerator
 {
 	private string firstLetter = "a";
 	private string secondLetter = "a";
@@ -35,7 +32,7 @@ public class QueryCriteriaGenerator
 		return currentParameter;
 	}
 
-	private string GetNextLetter(string letter)
+	private static string GetNextLetter(string letter)
 	{
 		if (letter.Length != 1 || letter[0] < 'a' || letter[0] > 'z')
 			throw new ArgumentException("Invalid letter");

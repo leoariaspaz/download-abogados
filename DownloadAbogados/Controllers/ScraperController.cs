@@ -1,11 +1,13 @@
-using System;
+using DownloadAbogados.UseCases;
 
 namespace DownloadAbogados.Controllers;
 
-public class ScraperController
+public class ScraperController(IParser parser)
 {
-	public void StartScraping()
+	private readonly IParser _parser = parser;
+
+	public async void StartScraping()
 	{
-		// Implementation of scraping logic
+		await _parser.ExecuteAsync();
 	}
 }

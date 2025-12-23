@@ -1,12 +1,10 @@
-using System;
-
 namespace DownloadAbogados.Data;
 
 public interface IMatriculadosRepository
 {
-	Task ClearCacheAsync();
+	void ClearCacheAsync();
 
-	Task PushAsync(Matriculado matriculado);
+	void PushAsync(Matriculado matriculado);
 
 	Task<bool> SaveAsync();
 }
