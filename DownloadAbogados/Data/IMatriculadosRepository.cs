@@ -1,10 +1,12 @@
+using DownloadAbogados.Data.DTOs;
+
 namespace DownloadAbogados.Data;
 
 public interface IMatriculadosRepository
 {
-	void ClearCacheAsync();
+	void ClearCache();
 
-	void PushAsync(Matriculado matriculado);
+	bool Push(MatriculadoDTO matriculado);
 
 	Task<bool> SaveAsync();
 }

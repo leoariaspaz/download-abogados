@@ -1,21 +1,24 @@
 using Dapper;
+using DownloadAbogados.Data.DTOs;
 
 namespace DownloadAbogados.Data;
 
 public class MatriculadosRepository(MySqlConnectionFactory connectionFactory) : IMatriculadosRepository
 {
-	private readonly Dictionary<string, Matriculado> _matriculados = [];
+	private readonly Dictionary<int, MatriculadoDTO> _matriculados = [];
 	private readonly MySqlConnectionFactory _connectionFactory = connectionFactory;
 
-	public void PushAsync(Matriculado matriculado)
+	public bool Push(MatriculadoDTO matriculado)
 	{
-		if (matriculado.Matricula != null && !_matriculados.ContainsKey(matriculado.Matricula))
+		if (!_matriculados.ContainsKey(matriculado.Matricula))
 		{
 			_matriculados[matriculado.Matricula] = matriculado;
+			return true;
 		}
+		return false;
 	}
 
-	public void ClearCacheAsync()
+	public void ClearCache()
 	{
 		_matriculados.Clear();
 	}
@@ -24,12 +27,22 @@ public class MatriculadosRepository(MySqlConnectionFactory connectionFactory) : 
 	{
 		try
 		{
-			foreach (var matriculado in _matriculados.Values)
+			var count = 0;
+			foreach (var matriculado in _matriculados.Values.Where(m => !m.Saved))
 			{
 				using var connection = _connectionFactory.CreateConnection();
 				var query = @"INSERT IGNORE INTO rivendel.Patrocinante(nombre, nroMatricula, domicilio, localidad, nroCasillero)
 					VALUES(@Nombre, @Matricula, @Domicilio, null, null);";
-				await connection.ExecuteAsync(query, matriculado);
+				var result = await connection.ExecuteAsync(query, matriculado);
+				matriculado.Saved = true;
+				if (result > 0)
+				{
+					count++;					
+				}
+			}
+			if (count > 0)
+			{
+				Console.WriteLine($"{count} nuevos matriculados guardados en la base de datos.");
 			}
 			return true;
 		}
