@@ -1,4 +1,5 @@
 using DownloadAbogados.Data;
+using DownloadAbogados.Data.DTOs;
 using DownloadAbogados.Services;
 
 namespace DownloadAbogados.UseCases;
@@ -19,13 +20,19 @@ public class MatriculadosParser(IQueryCriteriaGenerator generator,
 			try
 			{
 				var matriculados = await _matriculadosProvider.GetMatriculadosListAsync(parameter);
+				var lastCount = count;
 				foreach (var m in matriculados)
 				{
-					_matriculadosRepository.PushAsync(m);
+					if (_matriculadosRepository.Push(new MatriculadoDTO(m)))
+					{
+						count++;
+					}					
 				}
-				count += matriculados.Count;
+				if (parameter.EndsWith("a") && lastCount != count)
+				{
+					Console.WriteLine($"Último parámetro procesado: {parameter} - Total acumulado: {count}");
+				}
 				await _matriculadosRepository.SaveAsync();
-				_matriculadosRepository.ClearCacheAsync();
 			}
 			catch (Exception ex)
 			{
