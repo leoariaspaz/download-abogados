@@ -4,7 +4,7 @@ public class QueryCriteriaGenerator : IQueryCriteriaGenerator
 {
 	private string firstLetter = "a";
 	private string secondLetter = "a";
-	private string thirdLetter = "a";
+	private string thirdLetter = "";
 	private string currentParameter = "";
 
 	public string? GetNextQueryParameter()
@@ -34,6 +34,9 @@ public class QueryCriteriaGenerator : IQueryCriteriaGenerator
 
 	private static string GetNextLetter(string letter)
 	{
+		if (string.IsNullOrEmpty(letter))
+			return "a";
+
 		if (letter.Length != 1 || letter[0] < 'a' || letter[0] > 'z')
 			throw new ArgumentException("Invalid letter");
 
