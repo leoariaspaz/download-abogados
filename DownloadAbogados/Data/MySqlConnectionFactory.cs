@@ -18,5 +18,4 @@ public class MySqlConnectionFactory
 		conn.Open();
 		return conn;
 	}
-
 }

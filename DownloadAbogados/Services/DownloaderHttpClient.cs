@@ -1,4 +1,5 @@
 using HtmlAgilityPack;
+using DownloadAbogados.Domain;
 
 namespace DownloadAbogados.Services;
 
@@ -18,7 +19,7 @@ public class DownloaderHttpClient : IMatriculadosProvider
 			{
 				// Matricula: 5229 - Fecha: 10/07/2025
 				var partes = texto.Replace("Matricula:", "").Split(" - ");
-				result.Matricula = partes[0].Trim();
+				result.Matricula = int.Parse(partes[0].Trim());
 				result.Fecha = partes.Length > 1
 						? partes[1].Replace("Fecha:", "").Trim()
 						: null;
@@ -44,8 +45,6 @@ public class DownloaderHttpClient : IMatriculadosProvider
 		]);
 		try
 		{
-
-			//var response = await CustomHttpClient.PostWithRetryAsync(content);
 			var response = await CustomHttpClient.SharedClient.PostAsync("", content);
 			if (response.IsSuccessStatusCode)
 			{
