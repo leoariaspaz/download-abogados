@@ -5,6 +5,26 @@ namespace DownloadAbogados.Services;
 
 public class DownloaderHttpClient : IMatriculadosProvider
 {
+	private readonly CustomHttpClient _httpClient;
+
+	public DownloaderHttpClient() : this(CustomHttpClient.SharedClient)
+	{
+	}
+
+	public DownloaderHttpClient(HttpClient httpClient) : this(new CustomHttpClient(httpClient))
+	{
+	}
+
+	internal DownloaderHttpClient(HttpClient httpClient, Func<TimeSpan, Task> delayAsync)
+		: this(new CustomHttpClient(httpClient, delayAsync))
+	{
+	}
+
+	private DownloaderHttpClient(CustomHttpClient httpClient)
+	{
+		_httpClient = httpClient;
+	}
+
 	private static Matriculado HtmlNodeToMatriculado(HtmlNodeCollection parrafos)
 	{
 		var result = new Matriculado();
@@ -45,7 +65,7 @@ public class DownloaderHttpClient : IMatriculadosProvider
 		]);
 		try
 		{
-			var response = await CustomHttpClient.SharedClient.PostAsync("", content);
+			var response = await _httpClient.PostWithRetryAsync(content);
 			if (response.IsSuccessStatusCode)
 			{
 				string responseBody = await response.Content.ReadAsStringAsync();

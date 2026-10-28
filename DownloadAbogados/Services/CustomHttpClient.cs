@@ -1,4 +1,4 @@
-internal static class CustomHttpClient
+internal sealed class CustomHttpClient
 {
 	internal static readonly HttpClient SharedClient = new()
 	{
@@ -6,7 +6,16 @@ internal static class CustomHttpClient
 		Timeout = TimeSpan.FromSeconds(10)
 	};
 
-	internal static async Task<HttpResponseMessage> PostWithRetryAsync(HttpContent content)
+	private readonly HttpClient _client;
+	private readonly Func<TimeSpan, Task> _delayAsync;
+
+	internal CustomHttpClient(HttpClient client, Func<TimeSpan, Task>? delayAsync = null)
+	{
+		_client = client;
+		_delayAsync = delayAsync ?? Task.Delay;
+	}
+
+	internal async Task<HttpResponseMessage> PostWithRetryAsync(HttpContent content)
 	{
 		int retries = 3;
 
@@ -14,22 +23,25 @@ internal static class CustomHttpClient
 		{
 			try
 			{
-				return await SharedClient.PostAsync("", content);
+				return await _client.PostAsync("", content);
 			}
-			catch (TaskCanceledException) when (i < retries)
+			catch (TaskCanceledException)
 			{
+				if (i == retries) break;
 				Console.WriteLine("Timeout occurred, retrying...");
-				await Task.Delay(TimeSpan.FromSeconds(2 * i));
+				await _delayAsync(TimeSpan.FromSeconds(2 * i));
 			}
-			catch (HttpRequestException) when (i < retries)
+			catch (HttpRequestException)
 			{
+				if (i == retries) break;
 				Console.WriteLine("HTTP request failed, retrying...");
-				await Task.Delay(TimeSpan.FromSeconds(2 * i));
+				await _delayAsync(TimeSpan.FromSeconds(2 * i));
 			}
-			catch (Exception ex) when (i < retries)
+			catch (Exception ex)
 			{
+				if (i == retries) break;
 				Console.WriteLine($"Unexpected error: {ex.Message}, retrying...");
-				await Task.Delay(TimeSpan.FromSeconds(2 * i));
+				await _delayAsync(TimeSpan.FromSeconds(2 * i));
 			}
 		}
 

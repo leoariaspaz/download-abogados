@@ -3,10 +3,10 @@ using DownloadAbogados.Data.DTOs;
 
 namespace DownloadAbogados.Data;
 
-public class MatriculadosRepository(MySqlConnectionFactory connectionFactory) : IMatriculadosRepository
+public class MatriculadosRepository(IMySqlConnectionFactory connectionFactory) : IMatriculadosRepository
 {
 	private readonly Dictionary<int, MatriculadoDTO> _matriculados = [];
-	private readonly MySqlConnectionFactory _connectionFactory = connectionFactory;
+	private readonly IMySqlConnectionFactory _connectionFactory = connectionFactory;
 
 	public bool Push(MatriculadoDTO matriculado)
 	{
