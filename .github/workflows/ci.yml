@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore DownloadAbogados.sln
+
+      - name: Build solution
+        run: dotnet build DownloadAbogados.sln --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test DownloadAbogados.sln --no-build --no-restore --configuration Release

@@ -32,7 +32,7 @@ public class QueryCriteriaGenerator : IQueryCriteriaGenerator
 		return currentParameter;
 	}
 
-	private static string GetNextLetter(string letter)
+	internal static string GetNextLetter(string letter)
 	{
 		if (string.IsNullOrEmpty(letter))
 			return "a";

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloadAbogados", "DownloadAbogados\DownloadAbogados.csproj", "{090E0BC4-71FE-4D72-8287-8E933021F2BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloadAbogados.Tests", "DownloadAbogados.Tests\DownloadAbogados.Tests.csproj", "{B66A7D04-ED17-4CE7-9BA4-4B7002CC55FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{090E0BC4-71FE-4D72-8287-8E933021F2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{090E0BC4-71FE-4D72-8287-8E933021F2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{090E0BC4-71FE-4D72-8287-8E933021F2BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B66A7D04-ED17-4CE7-9BA4-4B7002CC55FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B66A7D04-ED17-4CE7-9BA4-4B7002CC55FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B66A7D04-ED17-4CE7-9BA4-4B7002CC55FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B66A7D04-ED17-4CE7-9BA4-4B7002CC55FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
